@@ -280,7 +280,7 @@ jobs:
     name: Run backend tests
     needs:
       - run-security-scan
-      - scan-code
+      - run-security-scan-code
       - scan-ci-dependencies
     permissions:
       contents: read
@@ -332,7 +332,7 @@ jobs:
     name: Run frontend unit tests
     needs:
       - run-security-scan
-      - scan-code
+      - run-security-scan-code
       - scan-ci-dependencies
     permissions:
       contents: read
@@ -383,7 +383,7 @@ jobs:
     name: Run frontend e2e tests
     needs:
       - run-security-scan
-      - scan-code
+      - run-security-scan-code
       - scan-ci-dependencies
     permissions:
       contents: read
@@ -476,7 +476,7 @@ jobs:
     name: Run frontend accessibility tests
     needs:
       - run-security-scan
-      - scan-code
+      - run-security-scan-code
       - scan-ci-dependencies
     permissions:
       contents: read
@@ -529,7 +529,7 @@ jobs:
     if: false
     needs:
       - run-security-scan
-      - scan-code
+      - run-security-scan-code
       - scan-ci-dependencies
     uses: ./.github/workflows/run-fuzz-tests.yaml
     with:
@@ -539,7 +539,7 @@ jobs:
     name: Run REST fuzz tests
     needs:
       - run-security-scan
-      - scan-code
+      - run-security-scan-code
       - scan-ci-dependencies
     uses: ./.github/workflows/run-fuzz-tests.yaml
     with:
