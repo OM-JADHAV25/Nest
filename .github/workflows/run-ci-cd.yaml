@@ -121,7 +121,7 @@ jobs:
         run: |
           make check-spelling
 
-  dtest-sbom:
+  test-sbom:
     name: Test SBOM generation
     if: github.event_name == 'workflow_dispatch'
     permissions:
@@ -137,6 +137,11 @@ jobs:
             -t sbom-test-backend \
             -f docker/backend/Dockerfile \
             backend
+
+      - name: Create dummy frontend env
+        run: |
+          echo "NEXT_PUBLIC_API_URL=http://localhost" > frontend/.env
+          echo "NEXT_PUBLIC_ENVIRONMENT=ci" >> frontend/.env
 
       - name: Build Frontend Image
         run: |
