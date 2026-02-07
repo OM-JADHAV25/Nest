@@ -121,6 +121,58 @@ jobs:
         run: |
           make check-spelling
 
+  dtest-sbom:
+    name: Test SBOM generation
+    if: github.event_name == 'workflow_dispatch'
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Build Backend Image
+        run: |
+          docker build \
+            -t sbom-test-backend \
+            -f docker/backend/Dockerfile \
+            backend
+
+      - name: Build Frontend Image
+        run: |
+          docker build \
+            -t sbom-test-frontend \
+            -f docker/frontend/Dockerfile \
+            frontend
+
+      - name: Generate SBOM for backend image
+        run: |
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$PWD:/work" \
+            aquasec/trivy:latest image \
+            --format cyclonedx \
+            --output /work/backend-sbom.cdx.json \
+            sbom-test-backend
+
+      - name: Generate SBOM for frontend image
+        run: |
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v "$PWD:/work" \
+            aquasec/trivy:latest image \
+            --format cyclonedx \
+            --output /work/frontend-sbom.cdx.json \
+            sbom-test-frontend
+
+      - name: Upload SBOM artifacts
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+        with:
+          name: sbom-test
+          path: |
+            backend-sbom.cdx.json
+            frontend-sbom.cdx.json
+
   run-security-scan-code:
     name: Run code security scan
     needs:
