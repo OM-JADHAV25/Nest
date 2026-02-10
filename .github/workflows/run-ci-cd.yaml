@@ -152,23 +152,11 @@ jobs:
 
       - name: Generate SBOM for backend image
         run: |
-          docker run --rm \
-            -v /var/run/docker.sock:/var/run/docker.sock \
-            -v "$PWD:/work" \
-            aquasec/trivy:latest image \
-            --format cyclonedx \
-            --output /work/backend-sbom.cdx.json \
-            sbom-test-backend
+          make sbom-backend-image BACKEND_IMAGE_NAME=sbom-test-backend
 
       - name: Generate SBOM for frontend image
         run: |
-          docker run --rm \
-            -v /var/run/docker.sock:/var/run/docker.sock \
-            -v "$PWD:/work" \
-            aquasec/trivy:latest image \
-            --format cyclonedx \
-            --output /work/frontend-sbom.cdx.json \
-            sbom-test-frontend
+          make sbom-frontend-image FRONTEND_IMAGE_NAME=sbom-test-frontend
 
       - name: Upload SBOM artifacts
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
